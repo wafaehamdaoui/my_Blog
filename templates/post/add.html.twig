@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Blog Post{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h1 class="text-center mb-1">Create a new blog post</h1>
+                {{ form_start(form) }}
+                    <div class="form-group">
+                        {{ form_label(form.title, 'Title') }}
+                        {{ form_widget(form.title, { 'attr': {'class': 'form-control'} }) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.content, 'Content') }}
+                        {{ form_widget(form.content, { 'attr': {'class': 'form-control', 'rows': 4} }) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.author, 'Author') }}
+                        {{ form_widget(form.author, { 'attr': {'class': 'form-control'} }) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.created_at, 'Publication Date') }}
+                        {{ form_widget(form.created_at, { 'attr': {'class': 'form-control'} }) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.url, 'Image URL') }}
+                        {{ form_widget(form.url, { 'attr': {'class': 'form-control'} }) }}
+                    </div>
+                    <div class="form-group mb-3">
+                        {{ form_label(form.updated_at, 'Updating Date') }}
+                        {{ form_widget(form.updated_at, { 'attr': {'class': 'form-control'} }) }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                    <a href="{{ path('blog_index') }}" class="btn btn-secondary">Cancel</a>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
