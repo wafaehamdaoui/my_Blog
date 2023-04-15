@@ -1,0 +1,27 @@
+{# templates/comment/index.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>All Comments</h1>
+    {% if comments|length == 0 %}
+        <p>No comments yet.</p>
+    {% else %}
+        <ul>
+            {% for comment in comments %}
+                <li>
+                    <strong>{{ comment.author }}</strong>
+                    <p>{{ comment.content }}</p>
+                    <div class="hidden lg:block">
+                                <a href="{{ path('comment_delete', {'post': comment.post.id, 'comment': comment.id}) }}""
+                                   onclick="return confirm('Are you sure?')"
+                                   class="transition-colors duration-300 text-xs font-semibold bg-gray-200 hover:bg-gray-300 rounded-full py-2 px-8"
+                                >Delete</a>
+                            </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <a href="{{ path('comments_delete') }}" class="transition-colors duration-300 text-xs font-semibold bg-gray-200 hover:bg-gray-300 rounded-full py-2 px-8">Delete All</a>
+{% endblock %}

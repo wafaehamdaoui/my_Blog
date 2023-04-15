@@ -85,11 +85,11 @@ class PostController extends AbstractController
         return $this->render('post/show.html.twig', 
         ['post' => $post]);
     }
-    #[Route('/delete', name: 'blog_delete')]
-    public function delete(EntityManagerInterface $entityManager,
+    #[Route('/delete/{id}', name: 'blog_delete')]
+    public function delete($id,EntityManagerInterface $entityManager,
     PostRepository $postRepository): Response
     {
-        $post=$postRepository->find(73);
+        $post=$postRepository->find($id);
         if($post){
             $entityManager->remove($post);
             $entityManager->flush();
@@ -145,32 +145,98 @@ class PostController extends AbstractController
         return $this->render('post/index.html.twig',['posts' => $posts]);
     }
 
-    #[Route('/blog/{id}/comments', name: 'blog')]
-    public function comments($id, CommentRepository $commentRepository): Response
-    {
-        $comments = $commentRepository->findByPost($id);
-
-        return $comments;
-    }
-
     #[Route('/addComment', name: 'addComment')]
     public function add(EntityManagerInterface $entityManager,
     PostRepository $postRepository): Response
     {
-        $post=$postRepository->find(13);
+        $post=$postRepository->find(24);
         if($post)
         {
             $comment = new Comment();
-            $comment->setContent('Commentaire 1');
-            $comment->setAuthor('Meriem HNIDA');
+            $comment->setContent('Commentaire 6');
+            $comment->setAuthor('Meryem HNIDA');
             $comment->setDate(new \DateTimeImmutable());
             $post->addComment($comment);
             $entityManager->persist($post);
             $entityManager->persist($comment);
             $entityManager->flush();
         }
-        $posts = $postRepository->findAll();
-        return $this->render('post/index.html.twig',
-        ['posts' => $posts]);
-       }
+        return $this->redirectToRoute('allComments');
+    }
+       
+    #[Route('/blog/{id}/comments', name: 'post_comments')]
+    public function comments($id, CommentRepository $commentRepository, PostRepository $PostRepository): Response
+    {
+        $post = $PostRepository->find($id);
+        $comments = $commentRepository->findByPost($id);
+        return $this->render('comment/show.html.twig',['comments' => $comments, 'post' => $post]);
+    }
+
+    #[Route('/blog/remove/{post}/{comment}', name: 'comment_delete')]
+    public function commentdelete($post,$comment,EntityManagerInterface $entityManager,
+    CommentRepository $commentRepository): Response
+    {
+        $comm=$commentRepository->find($comment);
+        if($comm){
+            $entityManager->remove($comm);
+            $entityManager->flush();
+        }
+        return $this->redirectToRoute('post_comments',['id' => $post]);
+    }
+    #[Route('/blog/removeComments', name: 'comments_delete')]
+    public function commentdeleteAll(EntityManagerInterface $entityManager,
+    CommentRepository $commentRepository): Response
+    {
+        $comments=$commentRepository->findAll();
+        if($comments){
+            foreach ($comments as $comment) {
+                $entityManager->remove($comment);
+            }
+            $entityManager->flush();
+        }
+        return $this->redirectToRoute('allComments');
+    }
+
+    #[Route('/blog/remove/{post}', name: 'comment_delete_post')]
+    public function commentDeletePost($post,EntityManagerInterface $entityManager,
+    CommentRepository $commentRepository): Response
+    {
+        $comments=$commentRepository->findByPost($post);
+        if($comments){
+            foreach ($comments as $comment) {
+                $entityManager->remove($comment);
+                $entityManager->flush();
+            } 
+        }
+        return $this->redirectToRoute('post_comments',['id',$post]);
+    }
+
+    #[Route('/blog/comments/author/{name}', name: 'author_removeAll')]
+    public function removeAll(PostRepository $postRepository,EntityManagerInterface $entityManager,
+                                CommentRepository $commentRepository, $name): Response
+    {
+        $posts = $postRepository->findByAuthor($name);
+        if($posts){
+            foreach ($posts as $post) {
+                $comments = $commentRepository->findByPost($post->getId());
+                if($comments){
+                    foreach ($comments as $comment) {
+                        $entityManager->remove($comment);
+                        $entityManager->flush();
+                    } 
+                }
+                $entityManager->remove($post);
+                $entityManager->flush();
+            }
+        }
+        return $this->redirectToRoute('allComments');
+    }
+    #[Route('/comment/all', name: 'allComments')]
+    public function allComments(EntityManagerInterface $entityManager,
+    CommentRepository $commentRepository): Response
+    {
+        $comments = $commentRepository->findAll();
+        return $this->render('comment/index.html.twig',
+        ['comments' => $comments]);
+    }
 }
