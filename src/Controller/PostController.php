@@ -8,8 +8,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\PostRepository;
 use App\Entity\Post;
-use App\Entity\Comment;
 use App\Repository\CommentRepository;
+use App\Entity\Comment;
+use App\Repository\CategoryRepository;
+use App\Entity\Category;
 
 class PostController extends AbstractController
 {
@@ -238,5 +240,42 @@ class PostController extends AbstractController
         $comments = $commentRepository->findAll();
         return $this->render('comment/index.html.twig',
         ['comments' => $comments]);
+    }
+
+    #[Route('/addCategory', name: 'addCategory')]
+    public function addCategory(EntityManagerInterface $entityManager,
+    CategoryRepository $categoryRepository): Response
+    {
+        $category = new Category();
+        $category->setName('Category 1');
+        $entityManager->persist($category);
+        $entityManager->flush();
+        return $this->redirectToRoute('all');
+    }
+
+    #[Route('/blog/category/{id}', name: 'blog_by_category')]
+    public function searchByCategory(PostRepository $postRepository, $id): Response
+    {
+        $posts = $postRepository->findByCategory($id);
+        return $this->render('post/index.html.twig',['posts' => $posts]);
+    }
+
+    #[Route('/category/remove/{id}', name: 'category_delete_post')]
+    public function categoryDeletePost($id,EntityManagerInterface $entityManager,
+    CategoryRepository $categoryRepository, PostRepository $postRepository): Response
+    {
+        $category=$categoryRepository->find($id);
+        if($category){
+            $entityManager->remove($category); 
+            $entityManager->flush();
+        }
+        $posts = $postRepository->findByCategory($id);
+        if ($posts) {
+            foreach ($posts as $post) {
+                $entityManager->remove($post); 
+                $entityManager->flush();
+            }
+        }
+        return $this->redirectToRoute('all');
     }
 }
