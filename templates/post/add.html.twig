@@ -1,40 +1,45 @@
-{% extends 'base.html.twig' %}
 
-{% block title %}New Blog Post{% endblock %}
+{% extends 'base.html.twig' %}
 
 {% block body %}
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <h1 class="text-center mb-1">Create a new blog post</h1>
-                {{ form_start(form) }}
-                    <div class="form-group">
-                        {{ form_label(form.title, 'Title') }}
-                        {{ form_widget(form.title, { 'attr': {'class': 'form-control'} }) }}
+                <div class="card">
+                    <div class="card-header"><h1>New Post</h1></div>
+                    <div class="card-body">
+                        {{ form_start(form) }}
+                        <div class="mb-3">
+                            {{ form_label(form.title, 'Title') }}
+                            {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.content, 'Content') }}
+                            {{ form_widget(form.content, {'attr': {'class': 'form-control', 'rows': 10}}) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.url, 'URL') }}
+                            {{ form_widget(form.url, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.author, 'Author') }}
+                            {{ form_widget(form.author, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.authorRole, 'Author Role') }}
+                            {{ form_widget(form.authorRole, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.category, 'Category') }}
+                            {{ form_widget(form.category, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-primary">Add</button>
+                        </div>
+                        {{ form_rest(form) }}
+                        {{ form_end(form) }}
                     </div>
-                    <div class="form-group">
-                        {{ form_label(form.content, 'Content') }}
-                        {{ form_widget(form.content, { 'attr': {'class': 'form-control', 'rows': 4} }) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.author, 'Author') }}
-                        {{ form_widget(form.author, { 'attr': {'class': 'form-control'} }) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.created_at, 'Publication Date') }}
-                        {{ form_widget(form.created_at, { 'attr': {'class': 'form-control'} }) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.url, 'Image URL') }}
-                        {{ form_widget(form.url, { 'attr': {'class': 'form-control'} }) }}
-                    </div>
-                    <div class="form-group mb-3">
-                        {{ form_label(form.updated_at, 'Updating Date') }}
-                        {{ form_widget(form.updated_at, { 'attr': {'class': 'form-control'} }) }}
-                    </div>
-                    <button type="submit" class="btn btn-primary">Create</button>
-                    <a href="{{ path('blog_index') }}" class="btn btn-secondary">Cancel</a>
-                {{ form_end(form) }}
+                </div>
             </div>
         </div>
     </div>

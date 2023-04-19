@@ -1,12 +1,10 @@
-{# templates/comment/index.html.twig #}
-
 {% extends 'base.html.twig' %}
 
 {% block body %}
     <h1>All Comments</h1>
     {% if comments|length == 0 %}
         <p>No comments yet.</p>
-    {% else %}
+    {% else %}s
         <ul>
             {% for comment in comments %}
                 <li>
